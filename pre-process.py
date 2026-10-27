@@ -5,6 +5,9 @@ import sckit
 import numpy as np
 from scipy.io import wavfile
 
+# The part below is meant as a personal todo list for the design of the class as i can't just input the wav data into a model without some pre-processing.
+# was kinda just easier to place it in the file for developing rather than a seperate one at the time really.
+
 # Create a class that performs the following:
 #   + Loads in wavfiles as numpy arrays based of the base dir
 #   + creates mfcc's for each data set from the wavfiles
@@ -21,6 +24,8 @@ class AudioPreProcessor:
         self.fake_nps = []
         self.fake_mfcc = []
 
+
+    # these load methods might be changed in the future due to their repeatitiveness but rn they do work as intended
     def load_fake(self):
         read_path = str(self.load_path / 'fake')
         for fname in os.listdir(read_path):
@@ -37,9 +42,10 @@ class AudioPreProcessor:
                 self.real_nps.append(wavfile.read(wav_fname))
 
     def load(self):
+        # TODO: need to include an option for specifying training and validation for the load path.
         self.load_path = Path(os.getcwd()) / 'for-norm' / 'training'
         self.load_fake()
-        #self.load_real()
+        self.load_real()
 
     def convert_to_mfcc(self):
         for nps in self.real_nps:
@@ -57,4 +63,3 @@ class AudioPreProcessor:
 
 processor = AudioPreProcessor()
 processor.load()
-print(processor.load_path)
