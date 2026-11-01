@@ -17,51 +17,44 @@ from scipy.io import wavfile as wf
 
 
 class AudioPreProcessor:
-    def __init__(self, path="training"):
-        self.load_path = path
-        self.real_nps = []
-        self.real_mfcc = []
+    def __init__(self):
+        # Forgot to manually label the datasets so that this can pass through a supervised algorithm
+        self.total_nps = []
 
-        self.fake_nps = []
-        self.fake_mfcc = []
-
-
-    # these load methods might be changed in the future due to their repeatitiveness but rn they do work as intended
-    def load_fake(self):
-        read_path = str(self.load_path / 'fake')
-        for fname in os.listdir(read_path):
-            wav_fname = os.path.join(read_path, fname)
-            if os.path.isfile(wav_fname):
-                wav_data, sr = librosa.load(wav_fname)
-                self.fake_nps.append(wav_data)
+        self.labels = []
+        self.mfccs = []
 
 
-    def load_real(self):
-        read_path = str(self.load_path / 'real')
-        for fname in os.listdir(read_path):
-            wav_fname = os.path.join(read_path, fname)
-            if os.path.isfile(wav_fname):
-                wav_data, sr = librosa.load(wav_fname)
-                #TODO: perform some assertions here to ensure that data is correct.
-                self.real_nps.append(wav_data)
-
-    def load(self):
-        # TODO: need to include an option for specifying training and validation for the load path.
-        self.load_path = Path(os.getcwd()) / 'for-norm' / self.load_path
-        self.load_fake()
-        self.load_real()
+    def load(self, path):
+        # TODO: include error detection for when the path is invalid.
+        self.load_path = Path(os.getcwd()) / 'for-norm' / path
+        # Label the name of the directories: real and fake.
+        categories = ['real', 'fake']
+        for category in categories:
+            # Builds a path to read the wav files from.
+            read_path = str(self.load_path / category)
+            # Looks for file names under the path and if's its a file then load it in through
+            # librosa load method.
+            for fname in os.listdir(read_path):
+                wav_fname = os.path.join(read_path, fname)
+                if os.path.isfile(wav_fname):
+                    # Loading the wav data whilst preserving the sample rate of said file
+                    wav_data, sr = librosa.load(wav_fname, sr=None)
+                    #TODO: perform some assertions here to ensure that data is correct.
+                    self.total_nps.append([wav_data, sr, category])
 
     def convert_to_mfcc(self):
-        for nps in self.real_nps:
-            self.real_mfcc.append(librosa.feature.mfcc(y=nps))
+        for nps in self.total_nps:
+            y, sr, label = nps
+            self.mfccs.append(librosa.feature.mfcc(y=y, sr=sr))
+            self.labels.append(label)
 
-        for nps in self.fake_nps:
-            self.fake_mfcc.append(librosa.feature.mfcc(y=nps))
+
+    def show_mfccs(self):
+        return self.mfccs
+
+    def show_labels(self):
+        return self.labels
 
 
-    def show_real_mfcc(self):
-        return self.real_mfcc
-
-    def show_fake_mfcc(self):
-        return self.fake_mfcc
 
