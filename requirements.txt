@@ -1,6 +1,8 @@
 
 
 jupyter
+librosa
 numpy
 sckit
-
+scipy
+scikit-learn
