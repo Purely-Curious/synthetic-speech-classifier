@@ -49,12 +49,13 @@ class AudioPreProcessor:
             self.mfccs.append(librosa.feature.mfcc(y=y, sr=sr))
             self.labels.append(label)
 
+    def clear(self):
+        self.total_nps = []
+        self.labels = []
+        self.mfccs = []
 
     def show_mfccs(self):
         return self.mfccs
 
     def show_labels(self):
         return self.labels
-
-
-
