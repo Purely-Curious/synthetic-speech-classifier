@@ -6,3 +6,4 @@ numpy
 sckit
 scipy
 scikit-learn
+soundfile
