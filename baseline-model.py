@@ -10,9 +10,7 @@ from pre_process import AudioPreProcessor
 
 # Loading in the processor (this may be changed in the future to allow for path changes when loading)
 ap = AudioPreProcessor()
-
 ap.load(path='training')
-ap.convert_to_mfcc()
 
 train_mfcc = ap.show_mfccs()
 train_labels = ap.show_labels()
@@ -20,7 +18,6 @@ train_labels = ap.show_labels()
 # Resetting mfcc lists to be used for validating the model
 ap.clear()
 ap.load(path='validation')
-ap.convert_to_mfcc()
 
 validate_mfcc = ap.show_mfccs()
 validate_labels = ap.show_labels()
@@ -28,7 +25,6 @@ validate_labels = ap.show_labels()
 # Resetting mfcc list to be used for testing the model
 ap.clear()
 ap.load(path='testing')
-ap.convert_to_mfcc()
 
 
 test_mfcc = ap.show_mfccs()
