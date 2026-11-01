@@ -16,6 +16,9 @@ import gc
 #   + able to differenciate between real and fake datasets.
 #   + able to print out the datasets (from real or fake)
 
+# This is for padding out the numpy arrays as they're not homogenous in length (current fix, might get back to this at some point)
+MAX_LEN = 20 * 400
+
 
 class AudioPreProcessor:
     def __init__(self):
@@ -38,6 +41,12 @@ class AudioPreProcessor:
                 wav_data, sr = sf.read(str(wav_fname))
                 mfcc = librosa.feature.mfcc(y=wav_data, sr=sr)
                 mfcc = mfcc.flatten()
+                print(mfcc.shape)
+                len_diff = MAX_LEN - len(mfcc)
+                # This is to pad out the array so that their all homogenous.
+                if len_diff > 0:
+                    mfcc = np.pad(mfcc, (0, len_diff), 'mean')
+                print(mfcc.shape)
                 self.mfccs.append(mfcc)
                 self.labels.append(category)
                 del mfcc
