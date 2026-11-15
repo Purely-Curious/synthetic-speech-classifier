@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from tqdm import trange
+import time
 import librosa
 import sckit
 import numpy as np
@@ -18,6 +20,7 @@ import gc
 
 # This is for padding out the numpy arrays as they're not homogenous in length (current fix, might get back to this at some point)
 MAX_LEN = 20 * 400
+# needs to be extended to 62 * 400 as the maximum numpy array length is about 24180
 
 
 class AudioPreProcessor:
@@ -35,8 +38,10 @@ class AudioPreProcessor:
         for category in categories:
             # Builds a path to read the wav files from.
             read_path = self.load_path / category
+            wav_fns = list(read_path.glob('*.wav'))
             # Finds all wav files in the directory with a wildcard
-            for wav_fname in read_path.glob('*.wav'):
+            for idx in trange(len(wav_fns)):
+                wav_fname = wav_fns[idx]
                 # soundfile is used as it's deemed to be a fast wav load library
                 wav_data, sr = sf.read(str(wav_fname))
                 mfcc = librosa.feature.mfcc(y=wav_data, sr=sr)
